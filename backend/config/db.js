@@ -1,8 +1,21 @@
 import mongoose from 'mongoose';
 
+const getMongoUri = () => {
+  return process.env.MONGODB_URI
+    || process.env.MONGODB_URL
+    || process.env.MONGO_URI
+    || process.env.DATABASE_URL
+    || 'mongodb://localhost:27017/job-portal-ats';
+};
+
 const connectDB = async (retries = 5) => {
   try {
-    const mongoURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/job-portal-ats';
+    const mongoURI = getMongoUri();
+
+    if (!mongoURI || mongoURI.includes('your-mongodb') || mongoURI.includes('localhost:27017') && process.env.NODE_ENV === 'production') {
+      console.warn('No production MongoDB URI configured. Set MONGODB_URI in Render environment variables.');
+      return null;
+    }
 
     await mongoose.connect(mongoURI, {
       serverSelectionTimeoutMS: 7000,

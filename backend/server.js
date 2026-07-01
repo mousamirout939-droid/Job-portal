@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import mongoose from 'mongoose';
 import helmet from 'helmet';
 import compression from 'compression';
 import rateLimit from 'express-rate-limit';
@@ -53,7 +54,11 @@ app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'Server is running', timestamp: new Date().toISOString() });
+  res.json({
+    status: 'Server is running',
+    timestamp: new Date().toISOString(),
+    database: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected',
+  });
 });
 
 // API Routes
