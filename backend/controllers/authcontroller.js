@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import User from '../models/user.js';
 import jwt from 'jsonwebtoken';
 import { sendWelcomeEmail } from '../services/emailservice.js';
@@ -14,6 +15,13 @@ export const register = async (req, res) => {
 
     if (!name || !email || !password) {
       return res.status(400).json({ success: false, message: 'Please provide all required fields' });
+    }
+
+    if (mongoose.connection.readyState !== 1) {
+      return res.status(503).json({
+        success: false,
+        message: 'Database connection is not ready yet. Please try again shortly.',
+      });
     }
 
     let user = await User.findOne({ email });
