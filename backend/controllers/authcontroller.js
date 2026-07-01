@@ -38,8 +38,10 @@ export const register = async (req, res) => {
 
     const token = generateToken(user._id);
 
-    // Send welcome email
-    await sendWelcomeEmail(user.email, user.name);
+    // Send welcome email asynchronously so registration completes quickly
+    void sendWelcomeEmail(user.email, user.name).catch((emailError) => {
+      console.error('Welcome email could not be sent:', emailError.message);
+    });
 
     res.status(201).json({
       success: true,
