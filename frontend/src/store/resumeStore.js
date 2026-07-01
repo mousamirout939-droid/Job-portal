@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import axios from 'axios';
 
 const API_URL = import.meta.env.VITE_API_URL || '/api';
+const normalizedAPI = API_URL.endsWith('/api') ? API_URL : `${API_URL.replace(/\/$/, '')}/api`;
 
 export const useResumeStore = create((set) => ({
   resumes: [],
@@ -15,7 +16,7 @@ export const useResumeStore = create((set) => ({
       const formData = new FormData();
       formData.append('resume', file);
 
-      const response = await axios.post(`${API_URL}/resumes/upload`, formData, {
+      const response = await axios.post(`${normalizedAPI}/resumes/upload`, formData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
           'Content-Type': 'multipart/form-data',
@@ -38,7 +39,7 @@ export const useResumeStore = create((set) => ({
   getResumes: async () => {
     set({ loading: true, error: null });
     try {
-      const response = await axios.get(`${API_URL}/resumes`, {
+      const response = await axios.get(`${normalizedAPI}/resumes`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       });
       set({
@@ -58,7 +59,7 @@ export const useResumeStore = create((set) => ({
     set({ loading: true, error: null });
     try {
       const response = await axios.put(
-        `${API_URL}/resumes/${resumeId}/primary`,
+        `${normalizedAPI}/resumes/${resumeId}/primary`,
         {},
         { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
       );
@@ -83,7 +84,7 @@ export const useResumeStore = create((set) => ({
   deleteResume: async (resumeId) => {
     set({ loading: true, error: null });
     try {
-      await axios.delete(`${API_URL}/resumes/${resumeId}`, {
+      await axios.delete(`${normalizedAPI}/resumes/${resumeId}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       });
       set((state) => ({

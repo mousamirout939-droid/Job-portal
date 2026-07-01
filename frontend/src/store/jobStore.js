@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import axios from 'axios';
 
 const API_URL = import.meta.env.VITE_API_URL || '/api';
+const normalizedAPI = API_URL.endsWith('/api') ? API_URL : `${API_URL.replace(/\/$/, '')}/api`;
 
 export const useJobStore = create((set) => ({
   jobs: [],
@@ -56,7 +57,7 @@ export const useJobStore = create((set) => ({
   getJobById: async (id) => {
     set({ loading: true, error: null });
     try {
-      const response = await axios.get(`${API_URL}/jobs/${id}`);
+      const response = await axios.get(`${normalizedAPI}/jobs/${id}`);
       set({ job: response.data.job, loading: false });
       return response.data.job;
     } catch (error) {
@@ -70,7 +71,7 @@ export const useJobStore = create((set) => ({
   createJob: async (jobData) => {
     set({ loading: true, error: null });
     try {
-      const response = await axios.post(`${API_URL}/jobs`, jobData, {
+      const response = await axios.post(`${normalizedAPI}/jobs`, jobData, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       });
       set((state) => ({
@@ -90,7 +91,7 @@ export const useJobStore = create((set) => ({
   updateJob: async (id, jobData) => {
     set({ loading: true, error: null });
     try {
-      const response = await axios.put(`${API_URL}/jobs/${id}`, jobData, {
+      const response = await axios.put(`${normalizedAPI}/jobs/${id}`, jobData, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       });
       set((state) => ({
@@ -111,7 +112,7 @@ export const useJobStore = create((set) => ({
   deleteJob: async (id) => {
     set({ loading: true, error: null });
     try {
-      await axios.delete(`${API_URL}/jobs/${id}`, {
+      await axios.delete(`${normalizedAPI}/jobs/${id}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       });
       set((state) => ({
@@ -130,7 +131,7 @@ export const useJobStore = create((set) => ({
   getRecruiterJobs: async () => {
     set({ loading: true, error: null });
     try {
-      const response = await axios.get(`${API_URL}/jobs/recruiter/jobs`, {
+      const response = await axios.get(`${normalizedAPI}/jobs/recruiter/jobs`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       });
       set({ jobs: response.data.jobs, loading: false });

@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import axios from 'axios';
 
 const API_URL = import.meta.env.VITE_API_URL || '/api';
+const normalizedAPI = API_URL.endsWith('/api') ? API_URL : `${API_URL.replace(/\/$/, '')}/api`;
 
 export const useATSStore = create((set) => ({
   topCandidates: [],
@@ -14,7 +15,7 @@ export const useATSStore = create((set) => ({
     set({ loading: true, error: null });
     try {
       const response = await axios.post(
-        `${API_URL}/ats/${jobId}/score`,
+        `${normalizedAPI}/ats/${jobId}/score`,
         {},
         { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
       );
@@ -32,7 +33,7 @@ export const useATSStore = create((set) => ({
     set({ loading: true, error: null });
     try {
       const response = await axios.get(
-        `${API_URL}/ats/${jobId}/top-candidates/${limit}`,
+        `${normalizedAPI}/ats/${jobId}/top-candidates/${limit}`,
         { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
       );
       set({ topCandidates: response.data.candidates, loading: false });
@@ -47,7 +48,7 @@ export const useATSStore = create((set) => ({
   getATSAnalytics: async () => {
     set({ loading: true, error: null });
     try {
-      const response = await axios.get(`${API_URL}/ats/analytics`, {
+      const response = await axios.get(`${normalizedAPI}/ats/analytics`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       });
       set({ analytics: response.data.analytics, loading: false });

@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import axios from 'axios';
 
 const API_URL = import.meta.env.VITE_API_URL || '/api';
+const normalizedAPI = API_URL.endsWith('/api') ? API_URL : `${API_URL.replace(/\/$/, '')}/api`;
 
 export const useApplicationStore = create((set) => ({
   applications: [],
@@ -12,7 +13,7 @@ export const useApplicationStore = create((set) => ({
   getApplications: async (filters = {}) => {
     set({ loading: true, error: null });
     try {
-      const response = await axios.get(`${API_URL}/applications`, {
+      const response = await axios.get(`${normalizedAPI}/applications`, {
         params: filters,
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       });
@@ -29,7 +30,7 @@ export const useApplicationStore = create((set) => ({
     set({ loading: true, error: null });
     try {
       const response = await axios.post(
-        `${API_URL}/applications`,
+        `${normalizedAPI}/applications`,
         { jobId, resumeId, coverLetter },
         { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
       );
@@ -51,7 +52,7 @@ export const useApplicationStore = create((set) => ({
     set({ loading: true, error: null });
     try {
       const response = await axios.put(
-        `${API_URL}/applications/${applicationId}`,
+        `${normalizedAPI}/applications/${applicationId}`,
         { status },
         { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
       );
@@ -74,7 +75,7 @@ export const useApplicationStore = create((set) => ({
   getApplicationStats: async () => {
     set({ loading: true, error: null });
     try {
-      const response = await axios.get(`${API_URL}/applications/stats`, {
+      const response = await axios.get(`${normalizedAPI}/applications/stats`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       });
       set({ stats: response.data.stats, loading: false });

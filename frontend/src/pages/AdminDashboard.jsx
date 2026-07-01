@@ -10,6 +10,7 @@ import {
 import { FaBuildingColumns } from 'react-icons/fa6';
 
 const API_URL = import.meta.env.VITE_API_URL || '/api';
+const normalizedAPI = API_URL.endsWith('/api') ? API_URL : `${API_URL.replace(/\/$/, '')}/api`;
 
 export default function AdminDashboard() {
   const [dashboard, setDashboard] = useState(null);
@@ -28,7 +29,7 @@ export default function AdminDashboard() {
 
   const fetchDashboard = async () => {
     try {
-      const response = await axios.get(`${API_URL}/admin/dashboard`, {
+      const response = await axios.get(`${normalizedAPI}/admin/dashboard`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setDashboard(response.data.dashboard);
@@ -41,7 +42,7 @@ export default function AdminDashboard() {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get(`${API_URL}/admin/users`, {
+      const response = await axios.get(`${normalizedAPI}/admin/users`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setUsers(response.data.users);
@@ -52,7 +53,7 @@ export default function AdminDashboard() {
 
   const fetchCompanies = async () => {
     try {
-      const response = await axios.get(`${API_URL}/admin/companies`, {
+      const response = await axios.get(`${normalizedAPI}/admin/companies`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setCompanies(response.data.companies);
@@ -63,7 +64,7 @@ export default function AdminDashboard() {
 
   const fetchApplications = async () => {
     try {
-      const response = await axios.get(`${API_URL}/applications`, {
+      const response = await axios.get(`${normalizedAPI}/applications`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setApplications(response.data.applications || []);
@@ -75,7 +76,7 @@ export default function AdminDashboard() {
   const handleUpdateApplication = async (applicationId, status) => {
     try {
       await axios.put(
-        `${API_URL}/applications/${applicationId}`,
+        `${normalizedAPI}/applications/${applicationId}`,
         { status },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -95,7 +96,7 @@ export default function AdminDashboard() {
   const handleVerifyCompany = async (companyId) => {
     try {
       await axios.post(
-        `${API_URL}/admin/companies/${companyId}/verify`,
+        `${normalizedAPI}/admin/companies/${companyId}/verify`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -110,7 +111,7 @@ export default function AdminDashboard() {
     if (window.confirm('Are you sure you want to suspend this user?')) {
       try {
         await axios.post(
-          `${API_URL}/admin/users/${userId}/suspend`,
+          `${normalizedAPI}/admin/users/${userId}/suspend`,
           {},
           { headers: { Authorization: `Bearer ${token}` } }
         );

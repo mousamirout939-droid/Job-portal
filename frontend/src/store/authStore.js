@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import axios from 'axios';
 
 const API_URL = import.meta.env.VITE_API_URL || '/api';
+const normalizedAPI = API_URL.endsWith('/api') ? API_URL : `${API_URL.replace(/\/$/, '')}/api`;
 
 export const useAuthStore = create((set) => ({
   user: null,
@@ -12,7 +13,7 @@ export const useAuthStore = create((set) => ({
   register: async (name, email, password, role) => {
     set({ loading: true, error: null });
     try {
-      const response = await axios.post(`${API_URL}/auth/register`, {
+      const response = await axios.post(`${normalizedAPI}/auth/register`, {
         name,
         email,
         password,
@@ -35,7 +36,7 @@ export const useAuthStore = create((set) => ({
   login: async (email, password) => {
     set({ loading: true, error: null });
     try {
-      const response = await axios.post(`${API_URL}/auth/login`, {
+      const response = await axios.post(`${normalizedAPI}/auth/login`, {
         email,
         password,
       });
@@ -62,7 +63,7 @@ export const useAuthStore = create((set) => ({
 
     set({ loading: true });
     try {
-      const response = await axios.get(`${API_URL}/auth/me`, {
+      const response = await axios.get(`${normalizedAPI}/auth/me`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       set({
@@ -79,7 +80,7 @@ export const useAuthStore = create((set) => ({
   updateProfile: async (data) => {
     set({ loading: true, error: null });
     try {
-      const response = await axios.put(`${API_URL}/auth/profile`, data, {
+      const response = await axios.put(`${normalizedAPI}/auth/profile`, data, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       });
       set({
